@@ -1,0 +1,49 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Connect to an AWS role from a GitHub repository
+
+# Controls when the workflow will run
+on:
+#   # Triggers the workflow on push or pull request events but only for the "main" branch
+#   push:
+#     branches: [ "main" ]
+#   pull_request:
+#     branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  AWS_REGION : "us-east-1" 
+  AWS_S3_BUCKETL: ""
+# Permission can be added at job level or workflow level    
+permissions:
+      id-token: write   # This is required for requesting the JWT
+      contents: read    # This is required for actions/checkout
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
+        
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: arn:aws:iam::111122223333:role/GitHubAction-AssumeRoleWithAction
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Print GITHUB_WORKSPACE
+        run: echo ${GITHUB_WORKSPACE}
+      # Runs a set of commands using the runners shell
+      - name: run s3 list script
+        run: bash ${GITHUB_WORKSPACE}/ls-s3-bucket.sh
