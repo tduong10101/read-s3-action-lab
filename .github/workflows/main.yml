@@ -14,8 +14,7 @@ on:
   workflow_dispatch:
 
 env:
-  AWS_REGION : "us-east-1" 
-  AWS_S3_BUCKETL: ""
+  AWS_REGION : "us-east-1"
 # Permission can be added at job level or workflow level    
 permissions:
       id-token: write   # This is required for requesting the JWT
@@ -39,7 +38,7 @@ jobs:
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v1.7.0
         with:
-          role-to-assume: arn:aws:iam::111122223333:role/GitHubAction-AssumeRoleWithAction
+          role-to-assume: arn:aws:iam::069363837566:oidc-provider/token.actions.githubusercontent.com
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ env.AWS_REGION }}
       - name: Print GITHUB_WORKSPACE
